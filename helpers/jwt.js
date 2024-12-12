@@ -1,4 +1,4 @@
-import { expressjwt } from "express-jwt"; // Ensure this is correctly imported
+import { expressjwt } from "express-jwt";
 
 function authJwt() {
   const secret = process.env.JWT_SECRET;
@@ -20,7 +20,7 @@ function authJwt() {
       ) {
         return req.headers.authorization.split(" ")[1];
       }
-      return null; // If no token found
+      return null;
     },
   }).unless({
     path: [
