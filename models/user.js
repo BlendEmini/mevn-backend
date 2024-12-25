@@ -3,19 +3,19 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: true, // Keep 'name' required for registration
   },
   email: {
     type: String,
-    required: true,
+    required: true, // Keep 'email' required for registration
   },
   passwordHash: {
     type: String,
-    required: true,
+    required: true, // Keep 'passwordHash' required for registration
   },
   phone: {
     type: String,
-    required: true,
+    required: false, // Make phone optional for registration
   },
   isAdmin: {
     type: Boolean,
@@ -23,23 +23,23 @@ const userSchema = new mongoose.Schema({
   },
   street: {
     type: String,
-    default: "",
+    default: "", // Make street optional for registration
   },
   apartment: {
     type: String,
-    default: "",
+    default: "", // Make apartment optional for registration
   },
   zip: {
     type: String,
-    default: "",
+    default: "", // Make zip optional for registration
   },
   city: {
     type: String,
-    default: "",
+    default: "", // Make city optional for registration
   },
   country: {
     type: String,
-    default: "",
+    default: "", // Make country optional for registration
   },
 });
 
