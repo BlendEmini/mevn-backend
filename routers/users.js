@@ -1,4 +1,5 @@
 import express from "express";
+import { isAdmin } from "../helpers/jwt.js";
 import {
   getAllUsers,
   getUserById,
@@ -9,11 +10,13 @@ import {
 
 const usersRoute = express.Router();
 
-// Routes
-usersRoute.get("/", getAllUsers);
-usersRoute.get("/:id", getUserById);
+// Public routes
 usersRoute.post("/register", registerUser);
 usersRoute.post("/login", loginUser);
-usersRoute.get("/get/count", getUserCount);
+
+// Admin-only routes
+usersRoute.get("/", isAdmin, getAllUsers);
+usersRoute.get("/:id", isAdmin, getUserById);
+usersRoute.get("/get/count", isAdmin, getUserCount);
 
 export default usersRoute;

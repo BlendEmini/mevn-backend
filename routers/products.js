@@ -1,4 +1,5 @@
 import express from "express";
+import { isAdmin } from "../helpers/jwt.js";
 import {
   getAllProducts,
   getProductById,
@@ -11,13 +12,15 @@ import {
 
 const productsRouter = express.Router();
 
-// Routes
+// Public routes
 productsRouter.get("/", getAllProducts);
 productsRouter.get("/:id", getProductById);
-productsRouter.post("/", createProduct);
-productsRouter.put("/:id", updateProduct);
-productsRouter.delete("/:id", deleteProduct);
 productsRouter.get("/get/featured/:count", getFeaturedProducts);
-productsRouter.put("/gallery-images/:id", updateProductImages);
+
+// Admin-only routes
+productsRouter.post("/", isAdmin, createProduct);
+productsRouter.put("/:id", isAdmin, updateProduct);
+productsRouter.delete("/:id", isAdmin, deleteProduct);
+productsRouter.put("/gallery-images/:id", isAdmin, updateProductImages);
 
 export default productsRouter;

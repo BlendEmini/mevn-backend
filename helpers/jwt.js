@@ -11,8 +11,7 @@ function authJwt() {
   return expressjwt({
     secret,
     algorithms: ["HS256"],
-    isRevoked: isRevoked,
-    // Get the token from the request's Authorization header
+    // Removed `isRevoked` (we'll handle roles separately)
     getToken: (req) => {
       if (
         req.headers.authorization &&
@@ -26,7 +25,6 @@ function authJwt() {
     path: [
       { url: /^\/api\/v1\/products(.*)/, methods: ["GET", "OPTIONS"] },
       { url: /^\/public\/uploads(.*)/, methods: ["GET", "OPTIONS"] },
-
       { url: /^\/api\/v1\/category(.*)/, methods: ["GET", "OPTIONS"] },
       `${api}/users/login`,
       `${api}/users/register`,
@@ -34,11 +32,12 @@ function authJwt() {
   });
 }
 
-async function isRevoked(req, jwt) {
-  const payload = jwt.payload;
-  if (!payload.isAdmin) {
-    return true;
+// New middleware: Check if user is admin
+export function isAdmin(req, res, next) {
+  if (!req.auth?.isAdmin) { // `req.auth` is set by `express-jwt`
+    return res.status(403).json({ message: "Forbidden: Admins only" });
   }
-  return false;
+  next();
 }
+
 export default authJwt;

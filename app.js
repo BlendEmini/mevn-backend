@@ -15,7 +15,7 @@ import orderItemRoute from "./routers/orderItem.js";
 
 // Import middleware and helpers
 import bodyParser from "body-parser";
-import authJwt from "./helpers/jwt.js";
+import authJwt, { isAdmin } from "./helpers/jwt.js"; // Import both authJwt and isAdmin
 
 // Configure environment variables
 dotenv.config();
@@ -34,15 +34,17 @@ app.use(
 app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan("tiny"));
-app.use(authJwt());
+app.use(authJwt()); // Apply JWT auth globally (except routes in .unless())
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  if (err) {
-    res.status(500).json({ message: err.message || err });
-  } else {
-    next();
+  if (err.name === "UnauthorizedError") {
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
+  if (err) {
+    return res.status(500).json({ message: err.message || "Server error" });
+  }
+  next();
 });
 
 // API URL
@@ -54,6 +56,11 @@ app.use(`${api}/users`, usersRoute);
 app.use(`${api}/orders`, ordersRoute);
 app.use(`${api}/category`, categoryRoute);
 app.use(`${api}/order-item`, orderItemRoute);
+
+// Example: Protect an admin-only route (add this if needed)
+// app.get(`${api}/admin/dashboard`, isAdmin, (req, res) => {
+//   res.json({ message: "Admin dashboard" });
+// });
 
 // Connect to MongoDB
 mongoose

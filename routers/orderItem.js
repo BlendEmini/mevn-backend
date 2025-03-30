@@ -1,4 +1,5 @@
 import express from "express";
+import { isAdmin } from "../helpers/jwt.js";
 import {
   getAllOrderItems,
   getOrderItemById,
@@ -6,7 +7,8 @@ import {
 
 const orderItemRoute = express.Router();
 
-orderItemRoute.get("/", getAllOrderItems);
-orderItemRoute.get("/:id", getOrderItemById);
+// Admin-only routes (order items are sensitive)
+orderItemRoute.get("/", isAdmin, getAllOrderItems);
+orderItemRoute.get("/:id", isAdmin, getOrderItemById);
 
 export default orderItemRoute;

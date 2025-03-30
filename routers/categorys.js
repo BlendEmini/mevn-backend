@@ -1,4 +1,5 @@
 import express from "express";
+import { isAdmin } from "../helpers/jwt.js";
 import {
   getAllCategories,
   getCategoryById,
@@ -9,10 +10,13 @@ import {
 
 const categoryRoute = express.Router();
 
+// Public routes
 categoryRoute.get("/", getAllCategories);
 categoryRoute.get("/:id", getCategoryById);
-categoryRoute.post("/", createCategory);
-categoryRoute.put("/:id", updateCategory);
-categoryRoute.delete("/:id", deleteCategory);
+
+// Admin-only routes
+categoryRoute.post("/", isAdmin, createCategory);
+categoryRoute.put("/:id", isAdmin, updateCategory);
+categoryRoute.delete("/:id", isAdmin, deleteCategory);
 
 export default categoryRoute;
